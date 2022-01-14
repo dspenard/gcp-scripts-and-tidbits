@@ -7,6 +7,9 @@
 # simply leave the export statements in place and comment/uncomment other segments appropriately for
 # each subsequent run of the script.
 
+
+export MY_PREFIX="dspenard"  # just a prefix to help with unique names such as with buckets
+
 export PROJECT_ID=$(gcloud config get-value project)
 export PROJECT_USER=$(gcloud config get-value core/account)  # current user
 export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
@@ -18,7 +21,7 @@ export CLUSTER_NAME="conf-conn-storage-demo"
 
 export CC_SA_NAME="conf-conn-storage-demo-sa"
 export CC_NAMESPACE="conf-conn-storage-demo" 
-export BUCKET_NAME="dspenard-test-cc-generated-bucket1"  # CHANGEME
+export BUCKET_NAME="${MY_PREFIX}-test-cc-generated-bucket1"
 
 env
 
