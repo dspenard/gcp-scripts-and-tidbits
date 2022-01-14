@@ -5,7 +5,7 @@
 # simply leave the export statements in place and comment/uncomment other segments appropriately for
 # each subsequent run of the script.
 
-export MY_PREFIX="dspenard"  # just a prefix to help with unique names such as with buckets
+export MY_PREFIX="gke-cc-demo"  # just a prefix to help with unique names such as with buckets
 
 export PROJECT_ID=$(gcloud config get-value project)
 export PROJECT_USER=$(gcloud config get-value core/account)  # current user
@@ -21,6 +21,18 @@ export CC_NAMESPACE="conf-conn-storage-demo"
 export BUCKET_NAME="${MY_PREFIX}-test-cc-generated-bucket1"
 
 env
+
+
+# confirm teardown in correct project
+while true; do
+    read -p "Destroy Cluster $CLUSTER_NAME with Config Connector and storage bucket ${BUCKET_NAME} on project ${PROJECT_ID} (y/n)?" -n 1 -r yn
+    echo
+    case $yn in
+        [Yy]* ) break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
 
 
 ## to destroy CRD resources the K8s declarative way

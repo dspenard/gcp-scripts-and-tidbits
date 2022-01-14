@@ -8,7 +8,7 @@
 # each subsequent run of the script.
 
 
-export MY_PREFIX="dspenard"  # just a prefix to help with unique names such as with buckets
+export MY_PREFIX="gke-cc-demo"  # just a prefix to help with unique names such as with buckets
 
 export PROJECT_ID=$(gcloud config get-value project)
 export PROJECT_USER=$(gcloud config get-value core/account)  # current user
@@ -26,7 +26,7 @@ export BUCKET_NAME="${MY_PREFIX}-test-cc-generated-bucket1"
 env
 
 
-# confirm installing in right project
+# confirm installing in correct project
 while true; do
     read -p "Create Config Connector on project ${PROJECT_ID} as user ${PROJECT_USER} (y/n)? " -n 1 -r yn
     echo
@@ -38,7 +38,7 @@ while true; do
 done
 
 
-# enable apis
+# enable APIs
 gcloud services enable compute.googleapis.com \
     container.googleapis.com \
     logging.googleapis.com \
