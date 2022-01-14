@@ -7,6 +7,7 @@
 # simply leave the export statements in place and comment/uncomment other segments appropriately for
 # each subsequent run of the script.
 
+
 export MY_PREFIX="dspenard"  # just a prefix to help with unique names such as with buckets
 
 export PROJECT_ID=$(gcloud config get-value project)

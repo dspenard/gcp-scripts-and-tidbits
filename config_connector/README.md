@@ -11,4 +11,3 @@ gke-conf-conn-storage-bucket.sh
 
 gke-conf-conn-storage-bucket-destroy.sh
 - script to teardown resources build with gke-conf-conn-storage-bucket.sh
-
