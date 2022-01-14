@@ -8,9 +8,9 @@
 # each subsequent run of the script.
 
 export PROJECT_ID=$(gcloud config get-value project)
-export PROJECT_USER=$(gcloud config get-value core/account) # set current user
+export PROJECT_USER=$(gcloud config get-value core/account)  # current user
 export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
-export IDNS=${PROJECT_ID}.svc.id.goog # workload identity domain
+export IDNS=${PROJECT_ID}.svc.id.goog  # workload identity domain
 
 export GCP_REGION="us-central1"
 export GCP_ZONE="us-central1-a"
@@ -18,11 +18,14 @@ export CLUSTER_NAME="conf-conn-storage-demo"
 
 export CC_SA_NAME="conf-conn-storage-demo-sa"
 export CC_NAMESPACE="conf-conn-storage-demo" 
-export BUCKET_NAME="dspenard-test-cc-generated-bucket1" # CHANGEME
+export BUCKET_NAME="dspenard-test-cc-generated-bucket1"  # CHANGEME
+
+env
+
 
 # confirm installing in right project
 while true; do
-    read -p "Create Config Connector on project ${PROJECT_ID} as user ${PROJECT_USER}? " -n 1 -r yn
+    read -p "Create Config Connector on project ${PROJECT_ID} as user ${PROJECT_USER} (y/n)? " -n 1 -r yn
     echo
     case $yn in
         [Yy]* ) break;;
@@ -37,16 +40,18 @@ gcloud services enable compute.googleapis.com \
     container.googleapis.com \
     logging.googleapis.com \
     stackdriver.googleapis.com \
-    cloudresourcemanager.googleapis.com
+    cloudresourcemanager.googleapis.com \
+    iamcredentials.googleapis.com
 
 
-# create cluster with config connector;
-# set appropriate version or leave blank to use the most recent version
+# create cluster with config connector
+# - set appropriate version or leave blank to use the most recent version
+# - workload-pool must be set in order to enable the ConfigConnector addon
 gcloud container --project $PROJECT_ID clusters create $CLUSTER_NAME \
     --region $GCP_REGION \
     --no-enable-basic-auth \
-    # --cluster-version "1.17.13-gke.2001" \
-    --release-channel "regular" \
+    --cluster-version "1.20.11-gke.1300" \
+    --release-channel "stable" \
     --machine-type "e2-small" \
     --image-type "COS" \
     --disk-type "pd-standard" \
@@ -88,7 +93,7 @@ gcloud iam service-accounts add-iam-policy-binding \
     --role="roles/iam.workloadIdentityUser"
 
 
-################
+################################
 
 # create config connector
 cat > configconnector.yaml << EOF
@@ -123,7 +128,7 @@ kubectl annotate namespace \
 kubectl get crds --selector cnrm.cloud.google.com/managed-by-kcc=true
 
 
-# describe a CRD
+# describe CRD
 kubectl describe crd storagebuckets.storage.cnrm.cloud.google.com
 
 
@@ -142,7 +147,7 @@ kubectl apply -f enable-storage.yaml -n $CC_NAMESPACE
 sleep 10
 
 
-################
+################################
 
 # create manifest for storage bucket
 cat > storage-bucket.yaml << EOF
@@ -171,5 +176,5 @@ sleep 10
 kubectl describe storagebuckets -n $CC_NAMESPACE
 
 
-# check whether bucket exists
+# list buckets to see if it exists
 gsutil ls
