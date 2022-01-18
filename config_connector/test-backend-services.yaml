@@ -1,0 +1,137 @@
+# https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#attaching-ext-https-lb
+
+
+# To keep it simple, what should be done imperatively with simple
+# gcloud commands vs kubectl declarative yaml?
+#
+# Being the cert provisioning takes the most time, should it and the forwarding
+# rule and target HTTPS proxy be done first imperatively?
+#
+# Is the minimal goal to be able to declaratively swap out an entire backend service
+# simply by adding/modifying URL Maps via config connector, and then imperatively
+# modify target HTTPS proxy and/or forwarding rule, as needed?
+#
+# Imperatively add NEGs to a backend service for each zone:
+# https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#add_backends
+
+
+# external LB resources needed:
+#
+# create with gcloud commands?
+# - external static IP address
+# - managed SSL cert
+# - forwarding rule
+# - target HTTPS proxy
+#
+# create with config connector?
+# - URL map
+# - backend service
+# - health check
+# - firewall rules for health check
+
+
+
+
+# backend service
+# https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computebackendservice
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeBackendService
+metadata:
+  name: echo-app-backend-service
+spec:
+  healthChecks:
+  - healthCheckRef:
+      name: echo-app-backend-healthcheck
+  protocol: HTTP
+  location: global
+---
+# health check
+# https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computehealthcheck
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeHealthCheck
+metadata:
+  name: echo-app-backend-healthcheck
+spec:
+  checkIntervalSec: 10
+  httpHealthCheck:
+    port: 80
+  location: global
+---
+# firewall rules
+# https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computefirewall
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeFirewall
+metadata:
+  name: fw-echo-app-allow-health-checks
+spec:
+  allow:
+    - protocol: tcp
+  direction: INGRESS
+  sourceRanges:
+    - "130.211.0.0/22"
+    - "35.191.0.0/16"
+  networkRef:
+    name: default
+  ---
+# URL map
+# https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computeurlmap
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeURLMap
+metadata:
+  name: echo-app-url-map
+  labels:
+    retry: again
+spec:
+  defaultService:
+    backendServiceRef:
+      name: echo-app-backend-service
+  location: global
+  pathMatcher:
+  # just using one backend service as an example
+    - name: echo-app-path-matcher
+      defaultService:
+        backendServiceRef:
+          name: echo-app-backend-service
+      pathRule:
+        - paths: ["/echo/*"]
+          service:
+            backendServiceRef:
+              name: echo-app-backend-service
+        - paths: ["/*"]
+          service:
+            backendServiceRef:
+              name: echo-app-backend-service
+  hostRule:
+    - hosts: ["dspenard.com"]
+      pathMatcher: allpaths
+
+
+# ---
+# # target HTTPS proxy
+# # https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computetargethttpsproxy
+# apiVersion: compute.cnrm.cloud.google.com/v1beta1
+# kind: ComputeTargetHTTPSProxy
+# metadata:
+#   name: echo-app-target-proxy
+# spec:
+#   description: Proxy for echo app
+#   urlMapRef:
+#     name: echo-app-url-map
+#   location: global
+# ---
+# # forwarding rule
+# # https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computeforwardingrule
+# apiVersion: compute.cnrm.cloud.google.com/v1beta1
+# kind: ComputeForwardingRule
+# metadata:
+#   name: echo-app-forwarding-rule
+# spec:
+#   target:
+#     targetHTTPSProxyRef:
+#       name: echo-app-target-proxy
+#   portRange: "443"
+#   ipProtocol: "TCP"
+#   ipVersion: "IPV4"
+#   location: global
+#
+# ## what about referencing an existing cert??
