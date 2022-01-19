@@ -1,0 +1,40 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeNetworkEndpointGroup
+metadata:
+  annotations:
+    cnrm.cloud.google.com/management-conflict-prevention-policy: none
+    cnrm.cloud.google.com/project-id: dspenard-playground
+    cnrm.cloud.google.com/state-into-spec: merge
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"compute.cnrm.cloud.google.com/v1beta1","kind":"ComputeNetworkEndpointGroup","metadata":{"annotations":{},"name":"echo-app-network-endpoint-group-2","namespace":"cc-negs-test2-ns"},"spec":{"location":"us-central1-b","networkRef":{"external":"default"},"subnetworkRef":{"external":"default"}}}
+  creationTimestamp: "2022-01-19T17:45:25Z"
+  deletionGracePeriodSeconds: 0
+  deletionTimestamp: "2022-01-19T19:36:15Z"
+  finalizers:
+  - cnrm.cloud.google.com/finalizer
+  generation: 3
+  name: echo-app-network-endpoint-group-2
+  namespace: cc-negs-test2-ns
+  resourceVersion: "112249"
+  uid: fbf9d8a7-dc5d-4b08-b132-2684f8f040b6
+spec:
+  location: us-central1-b
+  networkEndpointType: GCE_VM_IP_PORT
+  networkRef:
+    external: default
+  resourceID: echo-app-network-endpoint-group-2
+  subnetworkRef:
+    external: default
+status:
+  conditions:
+  - lastTransitionTime: "2022-01-19T19:36:15Z"
+    message: 'Delete call failed: error deleting resource: [{0 Error when reading
+      or editing NetworkEndpointGroup: googleapi: Error 400: The network_endpoint_group
+      resource ''projects/dspenard-playground/zones/us-central1-b/networkEndpointGroups/echo-app-network-endpoint-group-2''
+      is already being used by ''projects/dspenard-playground/global/backendServices/echo-app-backend-service'',
+      resourceInUseByAnotherResource  []}]'
+    reason: DeleteFailed
+    status: "False"
+    type: Ready
+  observedGeneration: 3
+  selfLink: https://www.googleapis.com/compute/v1/projects/dspenard-playground/zones/us-central1-b/networkEndpointGroups/echo-app-network-endpoint-group-2

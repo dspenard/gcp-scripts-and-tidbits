@@ -1,5 +1,10 @@
 ## Config Connector
 
+NOTE: this folder became a dumping ground when testing various things with config connector, so don't pay too much attention to it at the moment
+
+*** everything in this folder needs to be cleaned up
+
+
 https://cloud.google.com/config-connector/docs/overview
 
 Demo scripts for spinning up a GKE cluster and building resources via Config Connector.

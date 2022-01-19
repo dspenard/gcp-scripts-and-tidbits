@@ -1,0 +1,47 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeBackendService
+metadata:
+  annotations:
+    cnrm.cloud.google.com/management-conflict-prevention-policy: none
+    cnrm.cloud.google.com/observed-secret-versions: '{}'
+    cnrm.cloud.google.com/project-id: dspenard-playground
+    cnrm.cloud.google.com/state-into-spec: merge
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"compute.cnrm.cloud.google.com/v1beta1","kind":"ComputeBackendService","metadata":{"annotations":{},"name":"echo-app-backend-service","namespace":"cc-negs-test2-ns"},"spec":{"healthChecks":[{"healthCheckRef":{"name":"echo-app-backend-healthcheck"}}],"location":"global","protocol":"HTTP"}}
+  creationTimestamp: "2022-01-19T16:12:25Z"
+  deletionGracePeriodSeconds: 0
+  deletionTimestamp: "2022-01-19T19:36:14Z"
+  finalizers:
+  - cnrm.cloud.google.com/finalizer
+  generation: 7
+  name: echo-app-backend-service
+  namespace: cc-negs-test2-ns
+  resourceVersion: "112267"
+  uid: d03b4576-5ece-4396-acc6-0f3bedab7011
+spec:
+  connectionDrainingTimeoutSec: 300
+  healthChecks:
+  - healthCheckRef:
+      name: echo-app-backend-healthcheck
+  loadBalancingScheme: EXTERNAL
+  location: global
+  portName: http
+  protocol: HTTP
+  resourceID: echo-app-backend-service
+  sessionAffinity: NONE
+  timeoutSec: 30
+status:
+  conditions:
+  - lastTransitionTime: "2022-01-19T19:36:14Z"
+    message: 'Delete call failed: error deleting resource: [{0 Error when reading
+      or editing BackendService: googleapi: Error 400: The backend_service resource
+      ''projects/dspenard-playground/global/backendServices/echo-app-backend-service''
+      is already being used by ''projects/dspenard-playground/global/urlMaps/echo-app-url-map'',
+      resourceInUseByAnotherResource  []}]'
+    reason: DeleteFailed
+    status: "False"
+    type: Ready
+  creationTimestamp: "2022-01-18T10:38:15.752-08:00"
+  fingerprint: 0b3eWooJ8zI=
+  observedGeneration: 7
+  selfLink: https://www.googleapis.com/compute/v1/projects/dspenard-playground/global/backendServices/echo-app-backend-service

@@ -38,12 +38,30 @@ apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeBackendService
 metadata:
   name: echo-app-backend-service
+  namespace: cc-negs-test2-ns
 spec:
   healthChecks:
   - healthCheckRef:
       name: echo-app-backend-healthcheck
   protocol: HTTP
   location: global
+  # backend:
+  #   - balancingMode: RATE
+  #     capacityScaler: 0.9
+  #     description: An instance group serving this backend with 90% of its capacity, as calculated by requests per second.
+  #     maxRate: 10000
+  #     group:
+  #       networkEndpointGroupRef:
+  #         name: echo-app-network-endpoint-group-1
+  #         namespace: cc-negs-test2-ns        
+  #   - balancingMode: RATE
+  #     capacityScaler: 0.9
+  #     description: An instance group serving this backend with 90% of its capacity, as calculated by requests per second.
+  #     maxRate: 10000
+  #     group:
+  #       networkEndpointGroupRef:
+  #         name: echo-app-network-endpoint-group-2
+  #         namespace: cc-negs-test2-ns        
 ---
 # health check
 # https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computehealthcheck
@@ -51,6 +69,7 @@ apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeHealthCheck
 metadata:
   name: echo-app-backend-healthcheck
+  namespace: cc-negs-test2-ns
 spec:
   checkIntervalSec: 10
   httpHealthCheck:
@@ -59,26 +78,28 @@ spec:
 ---
 # firewall rules
 # https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computefirewall
-apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeFirewall
-metadata:
-  name: fw-echo-app-allow-health-checks
-spec:
-  allow:
-    - protocol: tcp
-  direction: INGRESS
-  sourceRanges:
-    - "130.211.0.0/22"
-    - "35.191.0.0/16"
-  networkRef:
-    name: default
-  ---
+# apiVersion: compute.cnrm.cloud.google.com/v1beta1
+# kind: ComputeFirewall
+# metadata:
+#   name: fw-echo-app-allow-health-checks
+  # namespace: cc-negs-test2-ns
+# spec:
+#   allow:
+#     - protocol: tcp
+#   direction: INGRESS
+#   sourceRanges:
+#     - "130.211.0.0/22"
+#     - "35.191.0.0/16"
+#   networkRef:
+#     external: default
+# ---
 # URL map
 # https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computeurlmap
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeURLMap
 metadata:
   name: echo-app-url-map
+  namespace: cc-negs-test2-ns
   labels:
     retry: again
 spec:
@@ -87,23 +108,69 @@ spec:
       name: echo-app-backend-service
   location: global
   pathMatcher:
-  # just using one backend service as an example
-    - name: echo-app-path-matcher
-      defaultService:
-        backendServiceRef:
-          name: echo-app-backend-service
-      pathRule:
-        - paths: ["/echo/*"]
-          service:
-            backendServiceRef:
-              name: echo-app-backend-service
-        - paths: ["/*"]
-          service:
-            backendServiceRef:
-              name: echo-app-backend-service
+  - name: allpaths
+    defaultService:
+      backendServiceRef:
+        name: echo-app-backend-service
+    pathRule:
+      - paths: ["/echo/*"]
+        service:
+          backendServiceRef:
+            name: echo-app-backend-service
+      - paths: ["/*"]
+        service:
+          backendServiceRef:
+            name: echo-app-backend-service
   hostRule:
-    - hosts: ["dspenard.com"]
-      pathMatcher: allpaths
+  - hosts: ["dspenard.com"]
+    pathMatcher: allpaths
+    
+# ---
+# # NEG
+# # https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computenetworkendpointgroup
+# apiVersion: compute.cnrm.cloud.google.com/v1beta1
+# kind: ComputeNetworkEndpointGroup
+# metadata:
+#   name: echo-app-network-endpoint-group-1
+#   namespace: cc-negs-test2-ns
+# spec:
+#   networkRef:
+#     external: default
+#   subnetworkRef:
+#     external: default
+#   location: us-central1-a
+# ---
+# apiVersion: compute.cnrm.cloud.google.com/v1beta1
+# kind: ComputeNetworkEndpointGroup
+# metadata:
+#   name: echo-app-network-endpoint-group-2
+#   namespace: cc-negs-test2-ns
+# spec:
+#   networkRef:
+#     external: default
+#   subnetworkRef:
+#     external: default
+#   location: us-central1-b
+
+
+# apiVersion: compute.cnrm.cloud.google.com/v1beta1
+# kind: ComputeNetwork
+# metadata:
+#   name: echo-app-network
+# spec:
+#   routingMode: REGIONAL
+#   autoCreateSubnetworks: false
+# ---
+# apiVersion: compute.cnrm.cloud.google.com/v1beta1
+# kind: ComputeSubnetwork
+# metadata:
+#   name: echo-app-subnetwork
+# spec:
+#   ipCidrRange: 10.2.0.0/16
+#   region: us-west1
+#   networkRef:
+#     name: echo-app-network
+
 
 
 # ---

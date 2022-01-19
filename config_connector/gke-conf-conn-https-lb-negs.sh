@@ -71,7 +71,7 @@ gcloud container --project $PROJECT_ID clusters create $CLUSTER_NAME \
     --subnetwork "projects/${PROJECT_ID}/regions/${GCP_REGION}/subnetworks/default" \
     --default-max-pods-per-node "110" \
     --enable-autoscaling --min-nodes "0" --max-nodes "3" \
-    --enable-master-authorized-networks --master-authorized-networks 174.45.73.139/32 \
+    # --enable-master-authorized-networks --master-authorized-networks 174.45.73.139/32 \
     --addons HorizontalPodAutoscaling,HttpLoadBalancing,NodeLocalDNS,ConfigConnector \
     --enable-autoupgrade --enable-autorepair \
     --max-surge-upgrade 2 --max-unavailable-upgrade 1 \

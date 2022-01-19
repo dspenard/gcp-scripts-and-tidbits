@@ -1,0 +1,19 @@
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cc-negs-test2-svc
+  namespace: cc-negs-test2-ns
+  annotations:
+    cloud.google.com/neg: '{"exposed_ports": {"80":{}}}'
+    #networking.gke.io/load-balancer-type: "Internal"
+  labels:
+    app: echo
+spec:
+  type: ClusterIP
+  selector:
+    app: echo
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
