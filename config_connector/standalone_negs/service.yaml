@@ -1,0 +1,18 @@
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-conf-conn-negs-service
+  namespace: test-conf-conn-negs
+  annotations:
+    cloud.google.com/neg: '{"exposed_ports": {"80":{"name": "neg-test-conf-conn-negs"}}}'
+  labels:
+    app: echo
+spec:
+  type: ClusterIP
+  selector:
+    app: echo
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP

@@ -1,0 +1,48 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeBackendService
+metadata:
+  annotations:
+    cnrm.cloud.google.com/management-conflict-prevention-policy: none
+    cnrm.cloud.google.com/observed-secret-versions: '{}'
+    cnrm.cloud.google.com/project-id: dspenard-playground
+    cnrm.cloud.google.com/state-into-spec: merge
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"compute.cnrm.cloud.google.com/v1beta1","kind":"ComputeBackendService","metadata":{"annotations":{},"name":"test-conf-conn-backend-service","namespace":"test-conf-conn-negs"},"spec":{"backend":[{"balancingMode":"RATE","group":{"networkEndpointGroupRef":{"external":"https://www.googleapis.com/compute/v1/projects/dspenard-playground/zones/us-central1-b/networkEndpointGroups/neg-test-conf-conn-negs"}},"maxRate":10000}],"healthChecks":[{"healthCheckRef":{"name":"test-conf-conn-backend-healthcheck"}}],"location":"global","protocol":"HTTP"}}
+  creationTimestamp: "2022-01-19T23:05:37Z"
+  finalizers:
+  - cnrm.cloud.google.com/finalizer
+  - cnrm.cloud.google.com/deletion-defender
+  generation: 4
+  name: test-conf-conn-backend-service
+  namespace: test-conf-conn-negs
+  resourceVersion: "40788"
+  uid: cd67577c-0c86-425a-9ff9-84b1fe98da7e
+spec:
+  backend:
+  - balancingMode: RATE
+    group:
+      networkEndpointGroupRef:
+        external: https://www.googleapis.com/compute/v1/projects/dspenard-playground/zones/us-central1-b/networkEndpointGroups/neg-test-conf-conn-negs
+    maxRate: 10000
+  connectionDrainingTimeoutSec: 300
+  healthChecks:
+  - healthCheckRef:
+      name: test-conf-conn-backend-healthcheck
+  loadBalancingScheme: EXTERNAL
+  location: global
+  portName: http
+  protocol: HTTP
+  resourceID: test-conf-conn-backend-service
+  sessionAffinity: NONE
+  timeoutSec: 30
+status:
+  conditions:
+  - lastTransitionTime: "2022-01-19T23:34:49Z"
+    message: Update in progress
+    reason: Updating
+    status: "False"
+    type: Ready
+  creationTimestamp: "2022-01-19T15:05:52.702-08:00"
+  fingerprint: M_xh0-LEleA=
+  observedGeneration: 4
+  selfLink: https://www.googleapis.com/compute/v1/projects/dspenard-playground/global/backendServices/test-conf-conn-backend-service
