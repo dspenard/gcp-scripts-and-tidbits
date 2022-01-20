@@ -1,29 +1,12 @@
 #!/usr/bin/env bash
 
-# NOTE: Confirm all script settings before trying to run as-is, and ensure no resource name collisions
-# will occur with any existing resources in your project.  If you find it beneficial to run in pieces,
-# simply leave the export statements in place and comment/uncomment other segments appropriately for
-# each subsequent run of the script.
+# NOTE: Confirm all scripts before trying to run as-is, and ensure no resource name collisions
+# will occur with any existing resources in your project.  Make sure you set the current project
+# and you are authorized in the CLI first.
 
-# make sure you set the current project and you are authorized in the CLI first
-
-export PROJECT_ID=$(gcloud config get-value project)
-export PROJECT_USER=$(gcloud config get-value core/account)  # current user
-export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
-export WORKLOAD_ID=${PROJECT_ID}.svc.id.goog  # workload identity domain
-
-export NETWORK_NAME="default"
-export GCP_REGION="us-central1"
-export GCP_ZONE="us-central1-a"
-
-export CLUSTER_NAME="test-conf-conn-negs"
-export SA_NAME="test-conf-conn-negs-sa"
-export NAMESPACE="test-conf-conn-negs"
-export SERVICE_NAME="test-conf-conn-negs-service"
-export NEG_NAME="neg-test-conf-conn-negs"
-
-export DOMAIN="dspenard.com"
-
+set -o allexport
+source dev.env
+set +o allexport
 env
 
 

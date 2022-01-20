@@ -1,27 +1,15 @@
 #!/usr/bin/env bash
 
-export PROJECT_ID=$(gcloud config get-value project)
-export PROJECT_USER=$(gcloud config get-value core/account)  # current user
-export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
-export WORKLOAD_ID=${PROJECT_ID}.svc.id.goog  # workload identity domain
-
-export NETWORK_NAME="default"
-export GCP_REGION="us-central1"
-export GCP_ZONE="us-central1-a"
-
-export CLUSTER_NAME="test-conf-conn-negs"
-export SA_NAME="test-conf-conn-negs-sa"
-export NAMESPACE="test-conf-conn-negs"
-export SERVICE_NAME="test-conf-conn-negs-service"
-export NEG_NAME="neg-test-conf-conn-negs"
-
-export DOMAIN="dspenard.com"
+set -o allexport
+source dev.env
+set +o allexport
+env
 
 
-# create echo app deployment
+# # create echo app deployment
 kubectl create deployment echo --image=k8s.gcr.io/echoserver:1.4 -n $NAMESPACE
 
-# scale to 3 replicas
+# # scale to 3 replicas
 kubectl scale deployment echo --replicas 3 -n $NAMESPACE
 
 # expose deployment with ClusterIP (for external access)
