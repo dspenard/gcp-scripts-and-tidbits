@@ -16,7 +16,7 @@ metadata:
     retry: again
   name: test-conf-conn-url-map
   namespace: test-conf-conn-negs
-  resourceVersion: "38694"
+  resourceVersion: "515425"
   uid: 5c4d7a31-b246-4287-bac0-98764f48410c
 spec:
   defaultService:
@@ -46,11 +46,10 @@ spec:
   resourceID: test-conf-conn-url-map
 status:
   conditions:
-  - lastTransitionTime: "2022-01-19T23:41:29Z"
-    message: reference ComputeBackendService test-conf-conn-negs/test-conf-conn-backend-service
-      is not ready
-    reason: DependencyNotReady
-    status: "False"
+  - lastTransitionTime: "2022-01-20T20:04:45Z"
+    message: The resource is up to date
+    reason: UpToDate
+    status: "True"
     type: Ready
   creationTimestamp: "2022-01-19T15:06:06.904-08:00"
   fingerprint: ep7YP08Q1qg=

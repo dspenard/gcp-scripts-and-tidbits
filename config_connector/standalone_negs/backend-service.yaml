@@ -47,9 +47,12 @@ metadata:
   name: test-conf-conn-backend-healthcheck
   namespace: test-conf-conn-negs
 spec:
-  checkIntervalSec: 10
+  checkIntervalSec: 5
   httpHealthCheck:
-    port: 80
+    portSpecification: USE_SERVING_PORT
+    proxyHeader: NONE
+    requestPath: "/healthz"
+  timeoutSec: 5
   location: global
 ---
 # URL map

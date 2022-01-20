@@ -12,10 +12,10 @@ metadata:
   finalizers:
   - cnrm.cloud.google.com/finalizer
   - cnrm.cloud.google.com/deletion-defender
-  generation: 4
+  generation: 11
   name: test-conf-conn-backend-service
   namespace: test-conf-conn-negs
-  resourceVersion: "40788"
+  resourceVersion: "516016"
   uid: cd67577c-0c86-425a-9ff9-84b1fe98da7e
 spec:
   backend:
@@ -37,12 +37,13 @@ spec:
   timeoutSec: 30
 status:
   conditions:
-  - lastTransitionTime: "2022-01-19T23:34:49Z"
-    message: Update in progress
-    reason: Updating
+  - lastTransitionTime: "2022-01-20T20:06:15Z"
+    message: reference ComputeHealthCheck test-conf-conn-negs/test-conf-conn-backend-healthcheck
+      is not ready
+    reason: DependencyNotReady
     status: "False"
     type: Ready
   creationTimestamp: "2022-01-19T15:05:52.702-08:00"
-  fingerprint: M_xh0-LEleA=
-  observedGeneration: 4
+  fingerprint: 5jz3LHpGL_I=
+  observedGeneration: 11
   selfLink: https://www.googleapis.com/compute/v1/projects/dspenard-playground/global/backendServices/test-conf-conn-backend-service
