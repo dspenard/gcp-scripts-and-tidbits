@@ -1,0 +1,42 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeHealthCheck
+metadata:
+  annotations:
+    cnrm.cloud.google.com/management-conflict-prevention-policy: none
+    cnrm.cloud.google.com/project-id: dspenard-playground
+    cnrm.cloud.google.com/state-into-spec: merge
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"compute.cnrm.cloud.google.com/v1beta1","kind":"ComputeHealthCheck","metadata":{"annotations":{},"name":"test-conf-conn-backend-healthcheck","namespace":"test-conf-conn-negs"},"spec":{"checkIntervalSec":5,"httpHealthCheck":{"portSpecification":"USE_SERVING_PORT","proxyHeader":"NONE","requestPath":"/healthz"},"location":"global","timeoutSec":5}}
+  creationTimestamp: "2022-01-19T23:05:39Z"
+  finalizers:
+  - cnrm.cloud.google.com/finalizer
+  - cnrm.cloud.google.com/deletion-defender
+  generation: 6
+  name: test-conf-conn-backend-healthcheck
+  namespace: test-conf-conn-negs
+  resourceVersion: "507481"
+  uid: 43b17d1d-7d94-483d-8111-a26579f63641
+spec:
+  checkIntervalSec: 5
+  healthyThreshold: 2
+  httpHealthCheck:
+    port: 80
+    portSpecification: USE_SERVING_PORT
+    proxyHeader: NONE
+    requestPath: /healthz
+  location: global
+  resourceID: test-conf-conn-backend-healthcheck
+  timeoutSec: 5
+  unhealthyThreshold: 2
+status:
+  conditions:
+  - lastTransitionTime: "2022-01-20T19:44:25Z"
+    message: 'Update call failed: error calculating diff: Error in http_health_check:
+      port cannot be specified when using port_specification USE_SERVING_PORT.'
+    reason: UpdateFailed
+    status: "False"
+    type: Ready
+  creationTimestamp: "2022-01-19T15:05:40.457-08:00"
+  observedGeneration: 6
+  selfLink: https://www.googleapis.com/compute/v1/projects/dspenard-playground/global/healthChecks/test-conf-conn-backend-healthcheck
+  type: HTTP

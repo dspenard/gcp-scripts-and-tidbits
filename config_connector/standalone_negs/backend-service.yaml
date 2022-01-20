@@ -1,0 +1,106 @@
+# NOTE: I didn't generate this file, everything is hardcoded, so confirm resource names, namespace, and such
+# are correct according to what was set in the other scripts.
+#
+# Deploys a backend service with URL Map, health check, and NEG specified.
+#
+#
+# External LB resources needed for the whole solution:
+#
+# created with gcloud commands either before or after config connector CRDs are created:
+# - external static IP address
+# - managed SSL cert
+# - forwarding rule
+# - target HTTPS proxy
+#
+# CRDs created here with config connector:
+# - URL map
+# - backend service
+# - health check
+# - firewall rules for health check (left off for now, already had this rule in place in numerous forms)
+
+
+# backend service
+# https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computebackendservice
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeBackendService
+metadata:
+  name: test-conf-conn-backend-service
+  namespace: test-conf-conn-negs
+spec:
+  healthChecks:
+  - healthCheckRef:
+      name: test-conf-conn-backend-healthcheck
+  protocol: HTTP
+  location: global
+  backend:
+  - balancingMode: RATE
+    maxRate: 10000
+    group:
+      networkEndpointGroupRef:
+        external: "https://www.googleapis.com/compute/v1/projects/dspenard-playground/zones/us-central1-b/networkEndpointGroups/neg-test-conf-conn-negs"
+---
+# health check
+# https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computehealthcheck
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeHealthCheck
+metadata:
+  name: test-conf-conn-backend-healthcheck
+  namespace: test-conf-conn-negs
+spec:
+  checkIntervalSec: 5
+  httpHealthCheck:
+    portSpecification: USE_SERVING_PORT
+    proxyHeader: NONE
+    requestPath: "/healthz"
+  timeoutSec: 5
+  location: global
+---
+# URL map
+# https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computeurlmap
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeURLMap
+metadata:
+  name: test-conf-conn-url-map
+  namespace: test-conf-conn-negs
+  labels:
+    retry: again
+spec:
+  defaultService:
+    backendServiceRef:
+      name: test-conf-conn-backend-service
+  location: global
+  pathMatcher:
+  - name: allpaths
+    defaultService:
+      backendServiceRef:
+        name: test-conf-conn-backend-service
+    pathRule:
+      - paths: ["/echo/*"]
+        service:
+          backendServiceRef:
+            name: test-conf-conn-backend-service
+      - paths: ["/*"]
+        service:
+          backendServiceRef:
+            name: test-conf-conn-backend-service
+  hostRule:
+  - hosts: ["*"]
+    pathMatcher: allpaths
+
+# ---
+# firewall rules
+# https://cloud.google.com/config-connector/docs/reference/resource-docs/compute/computefirewall
+# apiVersion: compute.cnrm.cloud.google.com/v1beta1
+# kind: ComputeFirewall
+# metadata:
+#   name: fw-test-conf-conn-allow-health-checks
+  # namespace: test-conf-conn-negs
+# spec:
+#   allow:
+#     - protocol: tcp
+#   direction: INGRESS
+#   sourceRanges:
+#     - "130.211.0.0/22"
+#     - "35.191.0.0/16"
+#   networkRef:
+#     external: default
