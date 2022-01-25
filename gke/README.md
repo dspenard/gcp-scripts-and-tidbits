@@ -1,4 +1,4 @@
 ## GKE
 
-Demo scripts for spinning up a GKE cluster in various forms.
+Demo scripts for GKE-related items.
 
